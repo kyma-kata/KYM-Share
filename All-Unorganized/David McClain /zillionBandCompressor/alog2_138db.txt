@@ -1,0 +1,10 @@
+"Compute the lookup table for ALog2(23*x), -1 < x < 0. Values of x > 0 clip at an output value of 1"
+| x y fileBuffer |
+
+"Get the file buffer."
+fileBuffer := self getFileBuffer.
+
+0 to: 4095 do: [ :i | 
+	x := 23 * (i - 2048 / 2048).
+	y := (x > 0) ifTrue: [1] ifFalse: [x twoExp].
+	fileBuffer writeSample: y]

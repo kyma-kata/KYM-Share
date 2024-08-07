@@ -1,0 +1,32 @@
+"Generates a wavetable by evaluating Tchebyshev polynomials in x over a fixed interval and with specified indices and amplitudes.  
+One of the ways a resulting wavetable can be used is as the transfer function of a Waveshaper."
+
+| fileBuffer sampleCount interval coefficients orders range offset tempTable maxAbsVal nextVal scale |
+
+"Get the file buffer."
+fileBuffer := self getFileBuffer.
+
+sampleCount := 4096.
+interval := #(-1.0 1.0).
+coefficients := #(1 {1/2 asFloat sqrt}  {1/3 asFloat sqrt} 
+	{1/5 asFloat sqrt} {1/7 asFloat sqrt}
+	{1/10 asFloat sqrt} {1/14 asFloat sqrt}).
+orders := #(1 2 3 5 7 10 14).
+
+"Compute a scale and an offset to get from a wavetable index to an x that falls within the interval."
+range := (interval last - interval first) abs / SignalProcessor tableLength asFloat.
+offset := interval first.
+tempTable := Array new: sampleCount.
+maxAbsVal := 0.
+
+1 to: sampleCount do: [ :tableIndex | | x |
+	x :=  (tableIndex - 1 * range + offset) arcCos.
+	nextVal := (1 to: coefficients size) inject: 0 into: [:sum :i |
+		(coefficients at: i) * ((x * (orders at: i)) cos) + sum].
+	maxAbsVal := nextVal abs max: maxAbsVal.
+	tempTable at: tableIndex put: nextVal].
+
+"Finally, normalize the entire table."
+scale := 1.0 / maxAbsVal.
+0 to: sampleCount - 1 do: [ :i |
+	fileBuffer writeSample: (tempTable at: i + 1) * scale].

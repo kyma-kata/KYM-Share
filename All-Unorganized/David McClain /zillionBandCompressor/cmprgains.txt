@@ -1,0 +1,27 @@
+"Routine to compute compression threshold gains table"
+"DM/TEG  06/01"
+
+| x y cmprTbl fileBuffer |
+
+"Get the file buffer."
+fileBuffer := self getFileBuffer.
+
+"The compression table. Elements are (freq Hz, compression Ratio) pairs"
+" R must be >= 1. Those are curly braces enclosing each pair, and regular parentheses surrounding the whole list."
+cmprTbl := #( {20 @ 1}  {100 @ 1.2}  {500 @ 1.8}  {1000 @ 2.5}  {2000 @ 1.5}  {4000 @ 1}  ).
+
+"Convert the compression table to a log Freq table for better interpolation."
+cmprTbl := cmprTbl collect: [:val | val x log @ val y ].
+
+"Generate the threshold compression gains table."
+0 to: 4095 do: [ :i | 
+	x := i / 4096 * SignalProcessor halfSampleRate.
+	y := (x <= 0) ifTrue: [0] ifFalse: [1 - (x log into: cmprTbl) inverse].
+	fileBuffer writeSample: y]
+
+"  ""Test it out""
+| cmprTbl |
+cmprTbl := #( {20 @ 1}  {100 @ 1.2}  {500 @ 1.8}  {1000 @ 2.5}  {2000 @ 1.5}  {4000 @ 1} ).
+cmprTbl collect: [:val | val x log @ val y ].
+50 into: cmprTbl
+"
