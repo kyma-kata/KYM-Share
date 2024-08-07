@@ -5,8 +5,8 @@ Sources include old forums and public websites.  No rights claimed. If there is 
 
 Some files may only work with specific hardware or firmware versions.  Examples include very old files that use User Microsounds for the Capybara and newer sounds that may assume Kyma 7 software.  
 
-Notes:
+# Notes
 There is a massive folder for all kyma files.  No promise they work or have documenation.  Please contribute to the collection.
 
-To do:
-Add folder structure.
+# To do
+Add folder structure and do inital organization pass.
