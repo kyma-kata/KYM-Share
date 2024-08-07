@@ -1,2 +1,2 @@
-# KYM-Share
-A collection of various kym files collected over the years
+# Capybara Microsounds
+These sounds only work on Capybara hardware and require loading the associated custom microsounds.
